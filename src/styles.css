@@ -1,0 +1,1928 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css");
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap');
+
+:root {
+  --neon-blue: #00d4ff;
+  --neon-purple: #b847ff;
+  --neon-cyan: #00ffff;
+  --dark-bg: #0a0a0a;
+  --card-bg: rgba(20, 25, 45, 0.9);
+  --glass-bg: rgba(255, 255, 255, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+  font-family: 'Roboto', sans-serif;
+  min-height: 100vh;
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+/* Contenedor principal futurista */
+.futuristic-container {
+  padding: 2rem;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* Cards futuristas con glassmorphism */
+.futuristic-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 20px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.futuristic-card:hover {
+  border-color: rgba(0, 212, 255, 0.6);
+  box-shadow: 
+    0 12px 40px rgba(0, 212, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateY(-5px);
+}
+
+/* Efectos de glow giratorio */
+.card-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    var(--neon-blue) 90deg,
+    var(--neon-purple) 180deg,
+    var(--neon-cyan) 270deg,
+    transparent 360deg
+  );
+  opacity: 0.3;
+  animation: rotate-glow 4s linear infinite;
+  z-index: -1;
+}
+
+@keyframes rotate-glow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Títulos futuristas */
+.futuristic-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  text-align: center;
+  text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+}
+
+.subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+/* Grupos de input futuristas */
+.futuristic-input-group {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.futuristic-select,
+.futuristic-input {
+  width: 100%;
+  padding: 1rem;
+  background: rgba(30, 30, 60, 0.8);
+  border: 2px solid rgba(0, 212, 255, 0.3);
+  border-radius: 12px;
+  color: #ffffff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.futuristic-select:focus,
+.futuristic-input:focus {
+  border-color: var(--neon-blue);
+  box-shadow: 
+    0 0 20px rgba(0, 212, 255, 0.3),
+    inset 0 0 20px rgba(0, 212, 255, 0.1);
+  background: rgba(30, 30, 60, 0.9);
+}
+
+.futuristic-label {
+  position: absolute;
+  top: -10px;
+  left: 15px;
+  background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0 5px;
+}
+
+/* Botones futuristas */
+.futuristic-btn {
+  background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+  border: none;
+  border-radius: 12px;
+  padding: 1rem 2rem;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+}
+
+.futuristic-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 212, 255, 0.5);
+  filter: brightness(1.2);
+}
+
+/* Información del curso */
+.course-info {
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.curso-info-card {
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.curso-info-header h3 {
+  color: var(--neon-cyan);
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+  font-size: 1rem;
+}
+
+.detail-label {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.detail-value {
+  color: var(--neon-blue);
+  font-weight: 500;
+}
+
+/* Sección de preguntas */
+.question-section {
+  background: rgba(20, 25, 45, 0.6);
+  border-radius: 15px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(184, 71, 255, 0.3);
+}
+
+.questions-section .section-title {
+  color: var(--neon-cyan);
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+}
+
+.question-text {
+  color: #ffffff;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+/* Preguntas futuristas */
+.futuristic-question-card {
+  background: rgba(20, 25, 45, 0.8);
+  border: 1px solid rgba(184, 71, 255, 0.3);
+  border-radius: 15px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+}
+
+.futuristic-question-card:hover {
+  border-color: rgba(184, 71, 255, 0.6);
+  box-shadow: 0 8px 30px rgba(184, 71, 255, 0.2);
+  transform: translateY(-3px);
+}
+
+.question-header {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.question-number {
+  background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+  color: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.question-text {
+  color: #ffffff;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.rating-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.rating-value {
+  color: var(--neon-cyan);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Progress bar */
+.futuristic-progress {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* Textarea futurista */
+.futuristic-textarea {
+  width: 100%;
+  padding: 1rem;
+  background: rgba(30, 30, 60, 0.8);
+  border: 2px solid rgba(0, 212, 255, 0.3);
+  border-radius: 12px;
+  color: #ffffff;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 120px;
+  transition: all 0.3s ease;
+  font-family: 'Roboto', sans-serif;
+}
+
+.futuristic-textarea:focus {
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  background: rgba(30, 30, 60, 0.9);
+  outline: none;
+}
+
+/* Botón de envío futurista */
+.futuristic-submit-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+  border: none;
+  border-radius: 15px;
+  padding: 1.5rem;
+  color: white;
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  margin-top: 2rem;
+}
+
+.futuristic-submit-btn:hover:not(:disabled) {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(184, 71, 255, 0.4);
+}
+
+.futuristic-submit-btn:disabled {
+  background: rgba(100, 100, 100, 0.5);
+  cursor: not-allowed;
+}
+
+/* Barra de progreso futurista */
+.futuristic-progress-container {
+  position: relative;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.futuristic-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  position: absolute;
+  right: 0;
+  top: -30px;
+  color: var(--neon-cyan);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.progress-label {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+/* Alertas futuristas */
+.futuristic-alert {
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  margin-top: 2rem;
+  font-size: 1rem;
+}
+
+.futuristic-alert.success {
+  background: rgba(0, 255, 0, 0.1);
+  border: 1px solid rgba(0, 255, 0, 0.3);
+  color: #00ff00;
+}
+
+.futuristic-alert.error {
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  color: #ff6b6b;
+}
+
+/* Sección de estadísticas */
+.stats-title {
+  font-family: 'Roboto', monospace;
+  font-size: 1.8rem;
+  color: var(--neon-cyan);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+/* Animaciones */
+.animated-element {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Efectos interactivos */
+.interactive-element:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+/* Estilos para SVG - Evitar círculos negros */
+svg path {
+  fill: none !important;
+}
+
+svg .circle-bg-large {
+  fill: none !important;
+  stroke: rgba(255, 255, 255, 0.2) !important;
+}
+
+svg .circle-large {
+  fill: none !important;
+  stroke: #00ff88 !important;
+}
+
+/* Variables para círculos */
+:root {
+  --neon-green: #00ff88;
+}
+
+/* Estilos para el componente de estadísticas futurista */
+.futuristic-hero-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 20px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    var(--neon-blue) 90deg,
+    var(--neon-purple) 180deg,
+    var(--neon-cyan) 270deg,
+    transparent 360deg
+  );
+  opacity: 0.2;
+  animation: rotate-glow 4s linear infinite;
+  z-index: -1;
+}
+
+.hero-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+.hero-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.main-score {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+.score-percentage {
+  font-size: 1.2rem;
+  color: var(--neon-green);
+  margin-left: 0.5rem;
+}
+
+.circular-progress-large {
+  width: 120px;
+  height: 120px;
+}
+
+.circular-chart-large {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  height: 100%;
+}
+
+.circle-bg-large {
+  fill: none !important;
+  stroke: rgba(255, 255, 255, 0.2) !important;
+  stroke-width: 3;
+}
+
+.circle-large {
+  fill: none !important;
+  stroke: var(--neon-green) !important;
+  stroke-width: 3;
+  stroke-linecap: round;
+  animation: progress 2s ease-out forwards;
+  filter: drop-shadow(0 0 5px var(--neon-green));
+}
+
+@keyframes progress {
+  0% { stroke-dasharray: 0 100; }
+}
+
+/* Cards de estadísticas por catedrático */
+.stats-card {
+  background: rgba(20, 25, 45, 0.8);
+  border: 1px solid rgba(184, 71, 255, 0.3);
+  border-radius: 15px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.stats-card:hover {
+  border-color: rgba(184, 71, 255, 0.6);
+  box-shadow: 0 8px 30px rgba(184, 71, 255, 0.2);
+  transform: translateY(-3px);
+}
+
+.stats-card .card-title {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.catedratico-stat {
+  padding: 0.5rem 0;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-label {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+}
+
+.stat-value {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.stat-value.primary {
+  color: var(--neon-blue);
+}
+
+.seminario-badge {
+  background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+  color: white;
+  padding: 0.2rem 0.8rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.promedio-score {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+/* Sección de análisis por seminario */
+.seminario-card {
+  background: rgba(20, 25, 45, 0.8);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 15px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.seminario-card:hover {
+  border-color: rgba(0, 212, 255, 0.6);
+  box-shadow: 0 8px 30px rgba(0, 212, 255, 0.2);
+  transform: translateY(-3px);
+}
+
+.seminario-name {
+  color: var(--neon-cyan);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.seminario-stats {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.seminario-score {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--neon-green);
+  text-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+}
+
+.seminario-percentage {
+  color: var(--neon-blue);
+  font-weight: 600;
+}
+
+/* Botones futuristas para estadísticas */
+.btn-primary {
+  background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+  border: none;
+  border-radius: 12px;
+  padding: 0.8rem 1.5rem;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 212, 255, 0.5);
+  filter: brightness(1.1);
+  background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+}
+
+/* Títulos de secciones */
+.h4 {
+  color: var(--neon-cyan);
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+/* Iconos con colores neon */
+.text-primary {
+  color: var(--neon-blue) !important;
+}
+
+.bg-primary {
+  background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)) !important;
+}
+
+/* Estilos para el panel derecho de análisis en tiempo real */
+.stats-glow {
+  background: conic-gradient(
+    from 180deg,
+    transparent 0deg,
+    var(--neon-purple) 90deg,
+    var(--neon-cyan) 180deg,
+    var(--neon-blue) 270deg,
+    transparent 360deg
+  );
+}
+
+/* Sección hero de estadísticas generales */
+.general-stats {
+  margin-bottom: 2rem;
+}
+
+.stats-hero {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(184, 71, 255, 0.1));
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 15px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.stats-hero-content {
+  flex: 1;
+}
+
+.stats-hero-title {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.stats-hero-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--neon-cyan);
+  margin-bottom: 0.2rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.stats-percentage {
+  font-size: 1rem;
+  color: var(--neon-green);
+  font-weight: 600;
+}
+
+.stats-hero-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+.stats-hero-visual {
+  flex-shrink: 0;
+}
+
+.circular-progress {
+  width: 80px;
+  height: 80px;
+}
+
+.circular-chart {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.circle-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.1);
+  stroke-width: 3;
+}
+
+.circle {
+  fill: none;
+  stroke: var(--neon-green);
+  stroke-width: 3;
+  stroke-linecap: round;
+  animation: progress 2s ease-out forwards;
+  filter: drop-shadow(0 0 3px var(--neon-green));
+}
+
+/* Estadísticas de catedráticos */
+.catedraticos-stats {
+  margin-bottom: 2rem;
+}
+
+.stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.stats-item {
+  background: rgba(20, 25, 45, 0.6);
+  border: 1px solid rgba(184, 71, 255, 0.2);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.stats-item:hover {
+  border-color: rgba(184, 71, 255, 0.4);
+  background: rgba(20, 25, 45, 0.8);
+}
+
+.stats-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.catedratico-info {
+  flex: 1;
+}
+
+.catedratico-name {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.catedratico-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.seminario-tag {
+  background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+  color: white;
+  padding: 0.2rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-block;
+  max-width: fit-content;
+}
+
+.response-count {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+}
+
+.rating-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.rating-value {
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue));
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.rating-stars {
+  display: flex;
+  gap: 0.1rem;
+}
+
+.star-icon {
+  color: #ffd700;
+  font-size: 0.8rem;
+  filter: drop-shadow(0 0 2px #ffd700);
+}
+
+.star-icon.bi-star {
+  color: rgba(255, 215, 0, 0.3);
+}
+
+/* Análisis por seminario */
+.seminarios-stats .section-title {
+  margin-bottom: 1rem;
+}
+
+.seminario-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.seminario-card {
+  background: rgba(20, 25, 45, 0.6);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.seminario-card:hover {
+  border-color: rgba(0, 212, 255, 0.4);
+  background: rgba(20, 25, 45, 0.8);
+}
+
+.seminario-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.seminario-name {
+  color: var(--neon-cyan);
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.seminario-score {
+  color: var(--neon-green);
+  font-size: 1.2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+}
+
+.score-percentage {
+  font-size: 0.8rem;
+  color: var(--neon-blue);
+  font-weight: 600;
+}
+
+.seminario-bar {
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-blue));
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .futuristic-container {
+    padding: 1rem;
+  }
+  
+  .futuristic-title {
+    font-size: 2rem;
+  }
+  
+  .futuristic-question-card {
+    padding: 1.5rem;
+  }
+  
+  .stats-hero {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .stats-hero-value {
+    font-size: 2rem;
+    justify-content: center;
+  }
+  
+  .stats-item-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+  
+  .seminario-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+/* Personalización de las alertas */
+.alert {
+  border-radius: 10px;
+  border: none;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.alert-success {
+  background-color: rgba(25, 135, 84, 0.1);
+  color: #198754;
+}
+
+.alert-danger {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+
+/* Estilo para las estrellas */
+.star-rating {
+  font-size: 1.5rem;
+  color: #ffc107;
+  cursor: pointer;
+}
+
+/* Tarjetas de estadísticas */
+.stats-card {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.stats-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2));
+  z-index: -1;
+}
+
+/* Efectos hover para elementos interactivos */
+.interactive-element {
+  transition: all 0.3s ease;
+}
+
+.interactive-element:hover {
+  transform: scale(1.02);
+}
+
+/* Loader animado */
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #FFF;
+  border-bottom-color: #0d6efd;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===== ESTILOS FUTURISTAS PARA EVALUACIÓN ===== */
+
+/* Variables CSS */
+:root {
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --dark-bg: #0f0f23;
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0a0;
+  --neon-blue: #00d4ff;
+  --neon-purple: #b347d9;
+  --neon-green: #39ff14;
+}
+
+/* Container futurista */
+.futuristic-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0c0c29 0%, #24243e 50%, #40407a 100%);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.futuristic-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(120, 219, 226, 0.2) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Tarjetas futuristas */
+.futuristic-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+.futuristic-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--neon-blue);
+  box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
+}
+
+.card-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, transparent, var(--neon-blue), transparent);
+  animation: rotate-glow 4s linear infinite;
+  opacity: 0.1;
+}
+
+.stats-glow {
+  background: conic-gradient(from 0deg, transparent, var(--neon-purple), transparent);
+}
+
+@keyframes rotate-glow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Títulos y textos */
+.futuristic-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.section-title i {
+  color: var(--neon-blue);
+}
+
+.stats-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.stats-title i {
+  color: var(--neon-purple);
+}
+
+/* Inputs futuristas */
+.futuristic-input-group {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.futuristic-select,
+.futuristic-textarea {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: rgba(30, 30, 60, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.futuristic-select option {
+  background: rgba(30, 30, 60, 0.95);
+  color: var(--text-primary);
+  padding: 0.5rem;
+  border: none;
+}
+
+.futuristic-select:focus,
+.futuristic-textarea:focus {
+  outline: none;
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+.futuristic-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.futuristic-label {
+  position: absolute;
+  top: -10px;
+  left: 15px;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Tarjeta de información del curso */
+.curso-info-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid rgba(0, 212, 255, 0.3);
+  border-radius: 15px;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  animation: slideInUp 0.6s ease-out;
+}
+
+.curso-info-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(0, 212, 255, 0.05), rgba(179, 71, 217, 0.05));
+  pointer-events: none;
+}
+
+.curso-info-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  color: var(--neon-blue);
+}
+
+.curso-info-header h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.curso-info-header i {
+  font-size: 1.3rem;
+  color: var(--neon-blue);
+}
+
+.curso-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.detail-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+}
+
+.detail-label i {
+  color: var(--neon-blue);
+}
+
+.detail-value {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 1rem;
+  text-align: right;
+}
+
+.seminario-badge-info {
+  background: linear-gradient(135deg, var(--neon-purple), #8a2be2);
+  color: white;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  text-shadow: 0 0 5px rgba(179, 71, 217, 0.5);
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Preguntas */
+.futuristic-question-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.futuristic-question-card:hover {
+  border-color: var(--neon-green);
+  box-shadow: 0 10px 30px rgba(57, 255, 20, 0.1);
+}
+
+.question-header {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.question-number {
+  background: var(--primary-gradient);
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.question-text {
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.rating-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.rating-feedback {
+  display: flex;
+  align-items: center;
+}
+
+.rating-value {
+  background: var(--success-gradient);
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Progreso futurista */
+.futuristic-progress {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--success-gradient);
+  border-radius: 10px;
+  transition: width 0.8s ease;
+  position: relative;
+}
+
+.progress-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Botón de envío futurista */
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.progress-section {
+  flex: 1;
+}
+
+.progress-label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.futuristic-progress-container {
+  position: relative;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.futuristic-progress-bar {
+  height: 100%;
+  background: var(--success-gradient);
+  border-radius: 10px;
+  transition: width 0.5s ease;
+  position: relative;
+}
+
+.progress-text {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.futuristic-submit-btn {
+  position: relative;
+  background: linear-gradient(45deg, #1a1a2e, #16213e);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  padding: 1rem 2rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.4s ease;
+  overflow: hidden;
+  min-width: 200px;
+}
+
+.futuristic-submit-btn.ready {
+  background: var(--success-gradient);
+  color: white;
+  border-color: var(--neon-green);
+  box-shadow: 0 10px 30px rgba(57, 255, 20, 0.3);
+}
+
+.futuristic-submit-btn:hover.ready {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px rgba(57, 255, 20, 0.4);
+}
+
+.futuristic-submit-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.btn-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.btn-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent, rgba(57, 255, 20, 0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.futuristic-submit-btn.ready:hover .btn-glow {
+  transform: translateX(100%);
+}
+
+/* Alertas futuristas */
+.futuristic-alert {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  padding: 1rem 1.5rem;
+  margin-top: 1rem;
+  border-left: 4px solid;
+  backdrop-filter: blur(10px);
+}
+
+.futuristic-alert.success {
+  border-left-color: var(--neon-green);
+  color: var(--neon-green);
+}
+
+.futuristic-alert.error {
+  border-left-color: #ff4757;
+  color: #ff4757;
+}
+
+/* Responsive para elementos futuristas */
+@media (max-width: 768px) {
+  .futuristic-container {
+    padding: 1rem;
+  }
+  
+  .futuristic-title {
+    font-size: 2rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .detail-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+  
+  .detail-value {
+    text-align: left;
+  }
+}
+
+/* Sección de progreso mejorada */
+.progress-section-enhanced {
+  background: rgba(20, 25, 45, 0.8);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.progress-label-enhanced {
+  color: var(--neon-cyan);
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.progress-percentage {
+  background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  min-width: 50px;
+  text-align: center;
+}
+
+.futuristic-progress-container-enhanced {
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 0.8rem;
+  position: relative;
+}
+
+.futuristic-progress-bar-enhanced {
+  height: 100%;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-cyan));
+  border-radius: 10px;
+  transition: width 0.5s ease;
+  position: relative;
+}
+
+.futuristic-progress-bar-enhanced::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmer-enhanced 2s infinite;
+}
+
+@keyframes shimmer-enhanced {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.progress-status {
+  text-align: center;
+}
+
+.status-incomplete {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-complete {
+  color: #00ff88;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+/* Mejoras para iconos */
+.futuristic-label i {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 5px rgba(0, 212, 255, 0.5);
+}
+
+/* Responsive adicional para progreso */
+@media (max-width: 768px) {
+  .progress-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  
+  .progress-section-enhanced {
+    padding: 1rem;
+  }
+}
+
+/* Botón pequeño futurista */
+.futuristic-btn-small {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(184, 71, 255, 0.2));
+  border: 1px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.futuristic-btn-small:hover {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(184, 71, 255, 0.3));
+  box-shadow: 
+    0 0 20px rgba(0, 212, 255, 0.4),
+    inset 0 0 20px rgba(0, 212, 255, 0.1);
+  border-color: var(--neon-magenta);
+  color: var(--neon-magenta);
+  transform: translateY(-2px);
+}
+
+.futuristic-btn-small::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.futuristic-btn-small:hover::before {
+  left: 100%;
+}
+
+/* Modal futurista */
+.futuristic-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.futuristic-modal-content {
+  background: linear-gradient(135deg, 
+    rgba(15, 15, 35, 0.95), 
+    rgba(25, 25, 45, 0.95));
+  border: 1px solid var(--neon-cyan);
+  border-radius: 15px;
+  max-width: 800px;
+  max-height: 80vh;
+  width: 90%;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 0 30px rgba(0, 212, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+.futuristic-modal-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(90deg, rgba(0, 212, 255, 0.1), rgba(184, 71, 255, 0.1));
+}
+
+.futuristic-modal-header .modal-title {
+  color: var(--neon-cyan);
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.futuristic-close-btn {
+  background: transparent;
+  border: 1px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.futuristic-close-btn:hover {
+  background: var(--neon-cyan);
+  color: var(--dark-bg);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
+}
+
+.futuristic-modal-body {
+  padding: 1.5rem;
+  max-height: 60vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--neon-cyan) transparent;
+}
+
+.futuristic-modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.futuristic-modal-body::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.futuristic-modal-body::-webkit-scrollbar-thumb {
+  background: var(--neon-cyan);
+  border-radius: 3px;
+}
+
+.curso-info-modal {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(184, 71, 255, 0.1));
+  border-radius: 10px;
+  padding: 1rem;
+  border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.info-header .info-title {
+  color: var(--neon-cyan);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.info-header .info-subtitle {
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
+
+.comentarios-count {
+  color: var(--neon-magenta);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.comentarios-list {
+  margin-top: 1rem;
+}
+
+.comentario-item {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.comentario-item:hover {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2);
+}
+
+.comentario-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(184, 71, 255, 0.3);
+}
+
+.comentario-numero {
+  color: var(--neon-cyan);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.comentario-fecha {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.comentario-contenido p {
+  color: var(--text-light);
+  margin: 0;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.sin-comentarios {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2rem;
+  font-style: italic;
+}
+
+.futuristic-modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(0, 212, 255, 0.3);
+  display: flex;
+  justify-content: flex-end;
+  background: linear-gradient(90deg, rgba(0, 212, 255, 0.05), rgba(184, 71, 255, 0.05));
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Asegurar visibilidad del card-footer */
+.card-footer {
+  background-color: transparent !important;
+  border-top: none !important;
+  padding: 0.5rem 1rem 1rem !important;
+}
+
+/* Mejorar la tarjeta de estadísticas */
+.stats-card {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(25, 25, 45, 0.6)) !important;
+  border: 1px solid rgba(0, 212, 255, 0.3) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.stats-card .card-body {
+  padding: 1.2rem !important;
+}
+
+/* Acciones de catedrático */
+.catedratico-actions {
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+/* Mejorar la apariencia de los items de estadísticas */
+.stats-item {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.stats-item:hover {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2);
+}
