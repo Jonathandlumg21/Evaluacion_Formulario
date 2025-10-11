@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { EvaluacionService } from '../services/evaluacion.service';
 import { SentimentAnalysisService, SentimentResult } from '../services/sentiment-analysis.service';
 
@@ -10,27 +11,36 @@ import { SentimentAnalysisService, SentimentResult } from '../services/sentiment
   imports: [CommonModule, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="container py-4">
-      <div class="sentiment-analysis-card">
+    <div class="futuristic-container">
+      <div class="futuristic-card sentiment-analysis-card">
+        <div class="card-glow"></div>
         <div class="card-header">
-          <h2 class="analysis-title">
-            <i class="bi bi-graph-up-arrow me-2"></i>
-            🧠 Análisis de Sentimientos - Comentarios de Evaluaciones
-          </h2>
-          <p class="analysis-subtitle">Analiza los comentarios de los catedráticos usando IA</p>
+          <div class="header-content">
+            <button (click)="volverAEvaluacion()" class="futuristic-btn">
+              <i class="bi bi-arrow-left me-2"></i>
+              Regresar a Evaluación
+            </button>
+            <div class="title-section">
+              <h2 class="futuristic-title">
+                <i class="bi bi-graph-up-arrow me-2"></i>
+                🧠 Análisis de Sentimientos
+              </h2>
+              <p class="subtitle">Analiza los comentarios de los catedráticos usando IA</p>
+            </div>
+          </div>
         </div>
 
         <div class="card-body">
           <!-- Selector de Catedráticos -->
-          <div class="form-section">
-            <label class="form-label">
+          <div class="futuristic-input-group">
+            <label class="futuristic-label">
               <i class="bi bi-person-badge me-2"></i>
               Seleccionar Catedrático:
             </label>
             <select 
               [(ngModel)]="selectedCatedraticoId"
               (ngModelChange)="onCatedraticoChange($event)"
-              class="form-select">
+              class="futuristic-select">
               <option value="">Elija un catedrático...</option>
               <option *ngFor="let catedratico of catedraticos" [value]="catedratico.catedraticoId">
                 {{ catedratico.nombreCompleto }}
@@ -39,18 +49,38 @@ import { SentimentAnalysisService, SentimentResult } from '../services/sentiment
           </div>
 
           <!-- Información del Catedrático Seleccionado -->
-          <div *ngIf="selectedCatedratico" class="mt-4 selected-info">
-            <div class="info-header">
-              <h4>
-                <i class="bi bi-info-circle me-2"></i>
-                Información del Catedrático
-              </h4>
-            </div>
-            <div class="info-content">
-              <p><strong>Nombre:</strong> {{ selectedCatedratico.nombreCompleto }}</p>
-              <div *ngIf="selectedCatedratico.cursos && selectedCatedratico.cursos.length > 0">
-                <p><strong>Curso:</strong> {{ selectedCatedratico.cursos[0].nombreCurso }}</p>
-                <p><strong>Seminario:</strong> {{ selectedCatedratico.cursos[0].seminario }}</p>
+          <div *ngIf="selectedCatedratico" class="mt-4">
+            <div class="curso-info-card animated-element">
+              <div class="curso-info-header">
+                <h3>
+                  <i class="bi bi-person-badge me-2"></i>
+                  Información del Catedrático
+                </h3>
+              </div>
+              <div class="curso-details">
+                <div class="detail-item">
+                  <span class="detail-label">
+                    <i class="bi bi-person-fill me-2"></i>
+                    Nombre:
+                  </span>
+                  <span class="detail-value">{{ selectedCatedratico.nombreCompleto }}</span>
+                </div>
+                <div *ngIf="selectedCatedratico.cursos && selectedCatedratico.cursos.length > 0">
+                  <div class="detail-item">
+                    <span class="detail-label">
+                      <i class="bi bi-book me-2"></i>
+                      Curso:
+                    </span>
+                    <span class="detail-value">{{ selectedCatedratico.cursos[0].nombreCurso }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="detail-label">
+                      <i class="bi bi-mortarboard me-2"></i>
+                      Seminario:
+                    </span>
+                    <span class="seminario-badge-info">{{ selectedCatedratico.cursos[0].seminario }}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -59,7 +89,7 @@ import { SentimentAnalysisService, SentimentResult } from '../services/sentiment
           <div class="mt-4" *ngIf="selectedCatedraticoId">
             <button 
               (click)="cargarComentarios()"
-              class="btn-cargar"
+              class="futuristic-btn"
               [disabled]="cargando">
               <span *ngIf="cargando" class="spinner-border spinner-border-sm me-2"></span>
               <i *ngIf="!cargando" class="bi bi-cloud-download me-2"></i>
@@ -68,104 +98,112 @@ import { SentimentAnalysisService, SentimentResult } from '../services/sentiment
           </div>
 
           <!-- Mostrar errores -->
-          <div *ngIf="error" class="alert alert-danger mt-3">
+          <div *ngIf="error" class="futuristic-alert error mt-3">
+            <i class="bi bi-exclamation-triangle me-2"></i>
             <strong>Error:</strong> {{ error }}
           </div>
 
           <!-- Indicador de carga -->
           <div *ngIf="cargando" class="text-center py-4">
-            <div class="spinner-border" role="status">
-              <span class="visually-hidden">Cargando...</span>
-            </div>
-            <p class="mt-2">Analizando sentimientos con IA...</p>
+            <div class="loader"></div>
+            <p class="mt-3 text-light">
+              <i class="bi bi-cpu me-2"></i>
+              Analizando sentimientos con IA...
+            </p>
           </div>
 
           <!-- Resultados del análisis -->
           <div *ngIf="resultadosSentimientos.length > 0 && !cargando" class="mt-4">
-            <h4>📊 Resultados del Análisis</h4>
+            <div class="results-header">
+              <h4><i class="bi bi-graph-up me-2"></i>Resultados del Análisis de Sentimientos</h4>
+              <div class="analysis-info">
+                <span class="badge-info">Total: {{ resultadosSentimientos.length }} comentarios</span>
+                <span class="badge-info" *ngIf="analysisData?.respuestaCompleta?.modelVersion">
+                  Modelo: {{ analysisData.respuestaCompleta.modelVersion }}
+                </span>
+              </div>
+            </div>
             
-            <!-- Resumen -->
-            <div class="row mb-4">
-              <div class="col-md-4">
-                <div class="card bg-success text-white">
-                  <div class="card-body text-center">
-                    <h5>😊 Positivos</h5>
-                    <h3>{{ contarSentimientos('positive') }}</h3>
-                  </div>
+            <!-- Resumen Estadístico Mejorado -->
+            <div class="statistics-grid">
+              <div class="stat-card positive">
+                <div class="stat-icon">😊</div>
+                <div class="stat-content">
+                  <h3>{{ contarSentimientos('positive') }}</h3>
+                  <p>Comentarios Positivos</p>
+                  <div class="stat-percentage">{{ getPercentage('positive') }}%</div>
                 </div>
               </div>
-              <div class="col-md-4">
-                <div class="card bg-warning text-white">
-                  <div class="card-body text-center">
-                    <h5>😐 Neutrales</h5>
-                    <h3>{{ contarSentimientos('neutral') }}</h3>
-                  </div>
+              <div class="stat-card neutral">
+                <div class="stat-icon">😐</div>
+                <div class="stat-content">
+                  <h3>{{ contarSentimientos('neutral') }}</h3>
+                  <p>Comentarios Neutrales</p>
+                  <div class="stat-percentage">{{ getPercentage('neutral') }}%</div>
                 </div>
               </div>
-              <div class="col-md-4">
-                <div class="card bg-danger text-white">
-                  <div class="card-body text-center">
-                    <h5>😞 Negativos</h5>
-                    <h3>{{ contarSentimientos('negative') }}</h3>
-                  </div>
+              <div class="stat-card negative">
+                <div class="stat-icon">😞</div>
+                <div class="stat-content">
+                  <h3>{{ contarSentimientos('negative') }}</h3>
+                  <p>Comentarios Negativos</p>
+                  <div class="stat-percentage">{{ getPercentage('negative') }}%</div>
                 </div>
               </div>
             </div>
 
-            <!-- Tabla de resultados detallados -->
-            <div class="table-responsive">
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Comentario</th>
-                    <th>Sentimiento</th>
-                    <th>Confianza Positiva</th>
-                    <th>Confianza Neutral</th>
-                    <th>Confianza Negativa</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let resultado of resultadosSentimientos">
-                    <td>{{ resultado.texto.length > 100 ? (resultado.texto | slice:0:100) + '...' : resultado.texto }}</td>
-                    <td [class]="getSentimentClass(resultado.sentimiento)">
-                      <strong>
-                        {{ getSentimentEmoji(resultado.sentimiento) }}
-                        {{ resultado.sentimiento | titlecase }}
-                      </strong>
-                    </td>
-                    <td>
-                      <div class="progress" style="height: 20px;">
-                        <div 
-                          class="progress-bar bg-success" 
-                          [style.width]="resultado.confianza.positivo"
-                          [title]="resultado.confianza.positivo">
-                          {{ resultado.confianza.positivo }}
+            <!-- Análisis Detallado por Comentario -->
+            <div class="detailed-analysis">
+              <h5><i class="bi bi-list-check me-2"></i>Análisis Detallado por Comentario</h5>
+              <div class="comments-analysis-grid">
+                <div *ngFor="let resultado of resultadosSentimientos; let i = index" class="comment-analysis-card">
+                  <div class="comment-header">
+                    <div class="comment-number">#{{ i + 1 }}</div>
+                    <div class="sentiment-badge" [ngClass]="'sentiment-' + resultado.sentimiento">
+                      {{ getSentimentEmoji(resultado.sentimiento) }}
+                      {{ resultado.sentimiento | titlecase }}
+                    </div>
+                  </div>
+                  
+                  <div class="comment-text">
+                    <p>{{ resultado.texto }}</p>
+                  </div>
+                  
+                  <div class="confidence-analysis">
+                    <h6>Niveles de Confianza:</h6>
+                    <div class="confidence-bars">
+                      <div class="confidence-item">
+                        <span class="confidence-label positive">Positivo</span>
+                        <div class="confidence-bar-container">
+                          <div class="confidence-bar positive" [style.width]="resultado.confianza.positivo"></div>
+                          <span class="confidence-value">{{ resultado.confianza.positivo }}</span>
                         </div>
                       </div>
-                    </td>
-                    <td>
-                      <div class="progress" style="height: 20px;">
-                        <div 
-                          class="progress-bar bg-warning" 
-                          [style.width]="resultado.confianza.neutral"
-                          [title]="resultado.confianza.neutral">
-                          {{ resultado.confianza.neutral }}
+                      <div class="confidence-item">
+                        <span class="confidence-label neutral">Neutral</span>
+                        <div class="confidence-bar-container">
+                          <div class="confidence-bar neutral" [style.width]="resultado.confianza.neutral"></div>
+                          <span class="confidence-value">{{ resultado.confianza.neutral }}</span>
                         </div>
                       </div>
-                    </td>
-                    <td>
-                      <div class="progress" style="height: 20px;">
-                        <div 
-                          class="progress-bar bg-danger" 
-                          [style.width]="resultado.confianza.negativo"
-                          [title]="resultado.confianza.negativo">
-                          {{ resultado.confianza.negativo }}
+                      <div class="confidence-item">
+                        <span class="confidence-label negative">Negativo</span>
+                        <div class="confidence-bar-container">
+                          <div class="confidence-bar negative" [style.width]="resultado.confianza.negativo"></div>
+                          <span class="confidence-value">{{ resultado.confianza.negativo }}</span>
                         </div>
                       </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                    </div>
+                  </div>
+                  
+                  <div class="analysis-metadata" *ngIf="analysisData?.respuestaCompleta?.documents[i]">
+                    <small>
+                      <i class="bi bi-info-circle me-1"></i>
+                      Longitud del texto: {{ analysisData.respuestaCompleta.documents[i].sentences[0]?.length || resultado.texto.length }} caracteres
+                    </small>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -401,6 +439,290 @@ import { SentimentAnalysisService, SentimentResult } from '../services/sentiment
       border-top: 1px solid rgba(255, 255, 255, 0.1);
       font-size: 0.9rem;
     }
+
+    /* Estilos para los resultados profesionales */
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #e0e6ed;
+    }
+
+    .results-header h4 {
+      color: #2d3748;
+      font-weight: 700;
+      margin: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .analysis-info {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .badge-info {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .statistics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--accent-color);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-card.positive::before {
+      background: linear-gradient(45deg, #4CAF50, #8BC34A);
+    }
+
+    .stat-card.neutral::before {
+      background: linear-gradient(45deg, #FF9800, #FFC107);
+    }
+
+    .stat-card.negative::before {
+      background: linear-gradient(45deg, #F44336, #E91E63);
+    }
+
+    .stat-icon {
+      font-size: 3rem;
+      margin-right: 1.5rem;
+    }
+
+    .stat-content h3 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 0;
+      color: #2d3748;
+    }
+
+    .stat-content p {
+      color: #718096;
+      font-weight: 600;
+      margin: 0.5rem 0;
+      font-size: 1.1rem;
+    }
+
+    .stat-percentage {
+      color: #4a5568;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .detailed-analysis {
+      margin-top: 3rem;
+    }
+
+    .detailed-analysis h5 {
+      color: #2d3748;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .comments-analysis-grid {
+      display: grid;
+      gap: 2rem;
+    }
+
+    .comment-analysis-card {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .comment-analysis-card:hover {
+      transform: translateX(5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .comment-number {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .sentiment-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .sentiment-badge.sentiment-positive {
+      background: linear-gradient(45deg, #4CAF50, #8BC34A);
+      color: white;
+    }
+
+    .sentiment-badge.sentiment-neutral {
+      background: linear-gradient(45deg, #FF9800, #FFC107);
+      color: white;
+    }
+
+    .sentiment-badge.sentiment-negative {
+      background: linear-gradient(45deg, #F44336, #E91E63);
+      color: white;
+    }
+
+    .comment-text {
+      background: #f8fafc;
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+      border-left: 4px solid #e2e8f0;
+    }
+
+    .comment-text p {
+      margin: 0;
+      color: #4a5568;
+      line-height: 1.6;
+      font-size: 1rem;
+    }
+
+    .confidence-analysis h6 {
+      color: #2d3748;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .confidence-bars {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .confidence-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .confidence-label {
+      min-width: 80px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .confidence-label.positive { color: #4CAF50; }
+    .confidence-label.neutral { color: #FF9800; }
+    .confidence-label.negative { color: #F44336; }
+
+    .confidence-bar-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .confidence-bar {
+      height: 8px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      position: relative;
+      min-width: 2px;
+    }
+
+    .confidence-bar.positive {
+      background: linear-gradient(45deg, #4CAF50, #8BC34A);
+    }
+
+    .confidence-bar.neutral {
+      background: linear-gradient(45deg, #FF9800, #FFC107);
+    }
+
+    .confidence-bar.negative {
+      background: linear-gradient(45deg, #F44336, #E91E63);
+    }
+
+    .confidence-value {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #4a5568;
+      min-width: 50px;
+    }
+
+    .analysis-metadata {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e2e8f0;
+      color: #718096;
+    }
+
+    .analysis-metadata i {
+      color: #667eea;
+    }
+
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .statistics-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .confidence-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+      }
+
+      .confidence-bar-container {
+        flex-direction: row;
+        align-items: center;
+      }
+    }
   `]
 })
 export class SentimentAnalysisComponent implements OnInit {
@@ -412,11 +734,13 @@ export class SentimentAnalysisComponent implements OnInit {
   cargando = false;
   error = '';
   cursoSeleccionado = 1;
+  analysisData: any = null;
 
   constructor(
     private evaluacionService: EvaluacionService,
     private sentimentService: SentimentAnalysisService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -424,16 +748,11 @@ export class SentimentAnalysisComponent implements OnInit {
   }
 
   cargarCatedraticos() {
-    console.log('🔄 Cargando catedráticos para sentiment analysis...');
     this.evaluacionService.getCatedraticos().subscribe({
       next: (response) => {
-        console.log('📋 Respuesta getCatedraticos en sentiment:', response);
         if (response.success && response.data) {
           this.catedraticos = response.data;
-          console.log('✅ Catedráticos cargados en sentiment:', this.catedraticos.length);
           this.cdr.detectChanges(); // Forzar detección de cambios con OnPush
-        } else {
-          console.warn('⚠️ No se encontraron catedráticos o respuesta inválida');
         }
       },
       error: (error) => {
@@ -443,11 +762,7 @@ export class SentimentAnalysisComponent implements OnInit {
   }
 
   onCatedraticoChange(catedraticoId: string) {
-    console.log('🔄 ID de catedrático seleccionado:', catedraticoId);
-    console.log('📋 Lista de catedráticos:', this.catedraticos);
-    
     this.selectedCatedratico = this.catedraticos.find(c => c.catedraticoId === Number(catedraticoId));
-    console.log('👤 Catedrático encontrado:', this.selectedCatedratico);
     
     // Limpiar datos previos
     this.comentarios = [];
@@ -477,11 +792,8 @@ export class SentimentAnalysisComponent implements OnInit {
     this.cargando = true;
     this.error = '';
     
-    console.log('🔍 Cargando comentarios del curso:', cursoId);
-    
     this.evaluacionService.getComentariosPorCurso(cursoId).subscribe({
       next: (response) => {
-        console.log('✅ Comentarios cargados:', response);
         this.comentarios = response.data || [];
         this.cargando = false;
         
@@ -524,11 +836,8 @@ export class SentimentAnalysisComponent implements OnInit {
     this.cargando = true;
     this.error = '';
     
-    console.log('🧠 Enviando análisis de sentimientos:', { textos });
-
     this.sentimentService.analizarSentimientos(textos).subscribe({
       next: (response) => {
-        console.log('✅ Análisis completado:', response);
         this.resultadosSentimientos = response.data.resultados;
         this.cargando = false;
         this.cdr.detectChanges();
@@ -597,5 +906,17 @@ export class SentimentAnalysisComponent implements OnInit {
       'negative': 'Negativo'
     };
     return labels[sentiment] || sentiment;
+  }
+
+  // Método para obtener el porcentaje de cada tipo de sentimiento
+  getPercentage(tipo: string): number {
+    if (this.resultadosSentimientos.length === 0) return 0;
+    const count = this.contarSentimientos(tipo);
+    return Math.round((count / this.resultadosSentimientos.length) * 100);
+  }
+
+  // Método para navegar de vuelta a la evaluación
+  volverAEvaluacion(): void {
+    this.router.navigate(['/']);
   }
 }
