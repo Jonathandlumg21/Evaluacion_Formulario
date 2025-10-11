@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError, tap } from 'rxjs';
+import { Observable, catchError, tap, shareReplay } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 interface Pregunta {
@@ -32,30 +32,52 @@ interface Evaluacion {
 })
 export class EvaluacionService {
   private apiUrl = environment.apiUrl;
+  
+  // Cache para evitar llamadas duplicadas
+  private catedraticosCache$?: Observable<any>;
+  private preguntasCache$?: Observable<any>;
+  private estadisticasCache$?: Observable<any>;
 
   constructor(private http: HttpClient) {
     console.log('EvaluacionService inicializado con API URL:', this.apiUrl);
   }
 
   getPreguntas(): Observable<any> {
-    const url = `${this.apiUrl}api/evaluaciones/preguntas`;
-    console.log('Llamando a getPreguntas:', url);
-    return this.http.get(url).pipe(
-      tap(response => console.log('Respuesta de getPreguntas:', response)),
-      catchError(error => {
-        console.error('Error en getPreguntas:', error);
-        throw error;
-      })
-    );
+    if (!this.preguntasCache$) {
+      const url = `${this.apiUrl}api/evaluaciones/preguntas`;
+      console.log('🔄 Llamando a getPreguntas (primera vez):', url);
+      this.preguntasCache$ = this.http.get(url).pipe(
+        tap(response => console.log('✅ Respuesta de getPreguntas:', response)),
+        shareReplay(1), // Cache la respuesta para reutilizar
+        catchError(error => {
+          console.error('❌ Error en getPreguntas:', error);
+          this.preguntasCache$ = undefined; // Limpia cache en error
+          throw error;
+        })
+      );
+    } else {
+      console.log('📋 Usando preguntas desde cache');
+    }
+    return this.preguntasCache$;
   }
 
   getCatedraticos(): Observable<any> {
-    const url = `${this.apiUrl}api/evaluaciones/catedraticos`;
-    console.log('Llamando a getCatedraticos:', url);
-    return this.http.get(url).pipe(
-      tap(response => console.log('Respuesta de getCatedraticos:', response)),
-      catchError(this.handleError('getCatedraticos'))
-    );
+    if (!this.catedraticosCache$) {
+      const url = `${this.apiUrl}api/evaluaciones/catedraticos`;
+      console.log('🔄 Llamando a getCatedraticos (primera vez):', url);
+      this.catedraticosCache$ = this.http.get(url).pipe(
+        tap(response => console.log('✅ Respuesta de getCatedraticos:', response)),
+        shareReplay(1), // Cache la respuesta para reutilizar
+        catchError((error) => {
+          console.error('❌ Error en getCatedraticos:', error);
+          this.catedraticosCache$ = undefined; // Limpia cache en error
+          throw error;
+        })
+      );
+    } else {
+      console.log('👥 Usando catedráticos desde cache');
+    }
+    return this.catedraticosCache$;
   }
 
   enviarEvaluacion(evaluacion: Evaluacion): Observable<any> {
@@ -68,20 +90,48 @@ export class EvaluacionService {
   }
 
   getEstadisticas(): Observable<any> {
-    const url = `${this.apiUrl}api/evaluaciones/estadisticas`;
-    console.log('Llamando a getEstadisticas:', url);
-    return this.http.get(url).pipe(
-      tap(response => console.log('Respuesta de getEstadisticas:', response)),
-      catchError(this.handleError('getEstadisticas'))
-    );
+    if (!this.estadisticasCache$) {
+      const url = `${this.apiUrl}api/evaluaciones/estadisticas`;
+      console.log('🔄 Llamando a getEstadisticas (primera vez):', url);
+      this.estadisticasCache$ = this.http.get(url).pipe(
+        tap(response => console.log('✅ Respuesta de getEstadisticas:', response)),
+        shareReplay(1), // Cache la respuesta para reutilizar
+        catchError((error) => {
+          console.error('❌ Error en getEstadisticas:', error);
+          this.estadisticasCache$ = undefined; // Limpia cache en error
+          throw error;
+        })
+      );
+    } else {
+      console.log('📊 Usando estadísticas desde cache');
+    }
+    return this.estadisticasCache$;
   }
 
   getComentariosPorCurso(cursoId: number): Observable<any> {
-    const url = `${this.apiUrl}api/evaluaciones/cursos/${cursoId}/comentarios`;
-    console.log('Llamando a getComentariosPorCurso:', { url, cursoId });
+    // Añadir timestamp para evitar cache del navegador sin usar headers personalizados
+    const timestamp = Date.now();
+    const url = `${this.apiUrl}api/evaluaciones/cursos/${cursoId}/comentarios?_t=${timestamp}`;
+    console.log('🔄 Llamando a getComentariosPorCurso:', { url, cursoId, timestamp });
+    
     return this.http.get(url).pipe(
-      tap(response => console.log('Respuesta de getComentariosPorCurso:', response)),
-      catchError(this.handleError('getComentariosPorCurso'))
+      tap(response => {
+        console.log('✅ Respuesta de getComentariosPorCurso:', response);
+        if (response && typeof response === 'object' && 'success' in response) {
+          const responseData = response as any;
+          console.log(`📝 Comentarios encontrados: ${responseData.data?.length || 0}`);
+        }
+      }),
+      catchError((error) => {
+        console.error('❌ Error en getComentariosPorCurso:', {
+          cursoId,
+          url,
+          status: error.status,
+          statusText: error.statusText,
+          error: error.error
+        });
+        return this.handleError('getComentariosPorCurso')(error);
+      })
     );
   }
 

@@ -1,20 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EvaluacionService } from '../services/evaluacion.service';
-import { SentimentAnalysisService } from '../services/sentiment-analysis.service';
+import { SentimentAnalysisService, SentimentResult } from '../services/sentiment-analysis.service';
 
 @Component({
   selector: 'app-sentiment-analysis',
   standalone: true,
   imports: [CommonModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="container py-4">
       <div class="sentiment-analysis-card">
         <div class="card-header">
           <h2 class="analysis-title">
             <i class="bi bi-graph-up-arrow me-2"></i>
-            Análisis de Sentimientos
+            🧠 Análisis de Sentimientos - Comentarios de Evaluaciones
           </h2>
           <p class="analysis-subtitle">Analiza los comentarios de los catedráticos usando IA</p>
         </div>
@@ -24,7 +25,7 @@ import { SentimentAnalysisService } from '../services/sentiment-analysis.service
           <div class="form-section">
             <label class="form-label">
               <i class="bi bi-person-badge me-2"></i>
-              Seleccione un Catedrático
+              Seleccionar Catedrático:
             </label>
             <select 
               [(ngModel)]="selectedCatedraticoId"
@@ -54,104 +55,117 @@ import { SentimentAnalysisService } from '../services/sentiment-analysis.service
             </div>
           </div>
 
-          <!-- Botón para Cargar Comentarios -->
-          <div class="mt-4">
+          <!-- Botón para Cargar y Analizar -->
+          <div class="mt-4" *ngIf="selectedCatedraticoId">
             <button 
               (click)="cargarComentarios()"
               class="btn-cargar"
-              [disabled]="!selectedCatedraticoId">
-              <i class="bi bi-cloud-download me-2"></i>
-              Cargar Comentarios
+              [disabled]="cargando">
+              <span *ngIf="cargando" class="spinner-border spinner-border-sm me-2"></span>
+              <i *ngIf="!cargando" class="bi bi-cloud-download me-2"></i>
+              {{ cargando ? 'Cargando y Analizando...' : 'Cargar y Analizar Comentarios' }}
             </button>
           </div>
 
-          <!-- Área de Comentarios -->
-          <div *ngIf="comentarios.length > 0" class="mt-4">
-            <div class="comments-section">
-              <h4>
-                <i class="bi bi-chat-text me-2"></i>
-                Comentarios Cargados
-              </h4>
-              <div class="comments-container">
-                <div *ngFor="let comentario of comentarios" class="comment-item">
-                  <div class="comment-header">
-                    <span class="comment-date">{{ formatearFecha(comentario.fechaEvaluacion) }}</span>
-                  </div>
-                  <div class="comment-text">{{ comentario.comentarios }}</div>
-                </div>
-              </div>
+          <!-- Mostrar errores -->
+          <div *ngIf="error" class="alert alert-danger mt-3">
+            <strong>Error:</strong> {{ error }}
+          </div>
+
+          <!-- Indicador de carga -->
+          <div *ngIf="cargando" class="text-center py-4">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Cargando...</span>
             </div>
-
-            <!-- Botón de Análisis -->
-            <button 
-              (click)="analizarSentimientos()"
-              class="btn-analizar mt-4"
-              [disabled]="!comentarios.length">
-              <i class="bi bi-robot me-2"></i>
-              Analizar Sentimientos
-            </button>
+            <p class="mt-2">Analizando sentimientos con IA...</p>
           </div>
 
-          <!-- Resultados del Análisis -->
-          <div *ngIf="resultadoAnalisis" class="mt-4 analysis-results">
-            <h4>
-              <i class="bi bi-graph-up me-2"></i>
-              Resultados del Análisis
-            </h4>
-
-            <!-- Resultados por Comentario -->
-            <div *ngFor="let doc of resultadoAnalisis.documents" class="result-item mb-4">
-              <div class="sentiment-header">
-                <div class="sentiment-badge" [ngClass]="'sentiment-' + doc.sentiment">
-                  {{ getSentimentLabel(doc.sentiment) }}
-                </div>
-              </div>
-
-              <!-- Texto del Comentario -->
-              <div class="comment-text-preview mt-3 mb-3">
-                {{ doc.sentences[0]?.text }}
-              </div>
-
-              <!-- Barras de Confianza -->
-              <div class="confidence-scores">
-                <div class="score-bar">
-                  <span class="bar-label">Positivo</span>
-                  <div class="progress">
-                    <div class="progress-bar bg-success" 
-                         [style.width]="(doc.confidenceScores.positive * 100) + '%'">
-                      {{ (doc.confidenceScores.positive * 100).toFixed(1) }}%
-                    </div>
+          <!-- Resultados del análisis -->
+          <div *ngIf="resultadosSentimientos.length > 0 && !cargando" class="mt-4">
+            <h4>📊 Resultados del Análisis</h4>
+            
+            <!-- Resumen -->
+            <div class="row mb-4">
+              <div class="col-md-4">
+                <div class="card bg-success text-white">
+                  <div class="card-body text-center">
+                    <h5>😊 Positivos</h5>
+                    <h3>{{ contarSentimientos('positive') }}</h3>
                   </div>
                 </div>
-
-                <div class="score-bar">
-                  <span class="bar-label">Neutral</span>
-                  <div class="progress">
-                    <div class="progress-bar bg-info" 
-                         [style.width]="(doc.confidenceScores.neutral * 100) + '%'">
-                      {{ (doc.confidenceScores.neutral * 100).toFixed(1) }}%
-                    </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card bg-warning text-white">
+                  <div class="card-body text-center">
+                    <h5>😐 Neutrales</h5>
+                    <h3>{{ contarSentimientos('neutral') }}</h3>
                   </div>
                 </div>
-
-                <div class="score-bar">
-                  <span class="bar-label">Negativo</span>
-                  <div class="progress">
-                    <div class="progress-bar bg-danger" 
-                         [style.width]="(doc.confidenceScores.negative * 100) + '%'">
-                      {{ (doc.confidenceScores.negative * 100).toFixed(1) }}%
-                    </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card bg-danger text-white">
+                  <div class="card-body text-center">
+                    <h5>😞 Negativos</h5>
+                    <h3>{{ contarSentimientos('negative') }}</h3>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- Información del Modelo -->
-            <div class="model-info mt-4">
-              <small class="text-muted">
-                <i class="bi bi-info-circle me-2"></i>
-                Análisis realizado con el modelo {{ resultadoAnalisis.modelVersion }}
-              </small>
+            <!-- Tabla de resultados detallados -->
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Comentario</th>
+                    <th>Sentimiento</th>
+                    <th>Confianza Positiva</th>
+                    <th>Confianza Neutral</th>
+                    <th>Confianza Negativa</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let resultado of resultadosSentimientos">
+                    <td>{{ resultado.texto.length > 100 ? (resultado.texto | slice:0:100) + '...' : resultado.texto }}</td>
+                    <td [class]="getSentimentClass(resultado.sentimiento)">
+                      <strong>
+                        {{ getSentimentEmoji(resultado.sentimiento) }}
+                        {{ resultado.sentimiento | titlecase }}
+                      </strong>
+                    </td>
+                    <td>
+                      <div class="progress" style="height: 20px;">
+                        <div 
+                          class="progress-bar bg-success" 
+                          [style.width]="resultado.confianza.positivo"
+                          [title]="resultado.confianza.positivo">
+                          {{ resultado.confianza.positivo }}
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="progress" style="height: 20px;">
+                        <div 
+                          class="progress-bar bg-warning" 
+                          [style.width]="resultado.confianza.neutral"
+                          [title]="resultado.confianza.neutral">
+                          {{ resultado.confianza.neutral }}
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="progress" style="height: 20px;">
+                        <div 
+                          class="progress-bar bg-danger" 
+                          [style.width]="resultado.confianza.negativo"
+                          [title]="resultado.confianza.negativo">
+                          {{ resultado.confianza.negativo }}
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -394,11 +408,15 @@ export class SentimentAnalysisComponent implements OnInit {
   selectedCatedraticoId: string = '';
   selectedCatedratico: any = null;
   comentarios: any[] = [];
-  resultadoAnalisis: any = null;
+  resultadosSentimientos: SentimentResult[] = [];
+  cargando = false;
+  error = '';
+  cursoSeleccionado = 1;
 
   constructor(
     private evaluacionService: EvaluacionService,
-    private sentimentService: SentimentAnalysisService
+    private sentimentService: SentimentAnalysisService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -406,106 +424,162 @@ export class SentimentAnalysisComponent implements OnInit {
   }
 
   cargarCatedraticos() {
+    console.log('🔄 Cargando catedráticos para sentiment analysis...');
     this.evaluacionService.getCatedraticos().subscribe({
       next: (response) => {
-        if (response.success) {
+        console.log('📋 Respuesta getCatedraticos en sentiment:', response);
+        if (response.success && response.data) {
           this.catedraticos = response.data;
+          console.log('✅ Catedráticos cargados en sentiment:', this.catedraticos.length);
+          this.cdr.detectChanges(); // Forzar detección de cambios con OnPush
+        } else {
+          console.warn('⚠️ No se encontraron catedráticos o respuesta inválida');
         }
       },
       error: (error) => {
-        console.error('Error al cargar catedráticos:', error);
+        console.error('❌ Error al cargar catedráticos en sentiment:', error);
       }
     });
   }
 
   onCatedraticoChange(catedraticoId: string) {
-    console.log('ID de catedrático seleccionado:', catedraticoId);
-    console.log('Lista de catedráticos:', this.catedraticos);
+    console.log('🔄 ID de catedrático seleccionado:', catedraticoId);
+    console.log('📋 Lista de catedráticos:', this.catedraticos);
     
     this.selectedCatedratico = this.catedraticos.find(c => c.catedraticoId === Number(catedraticoId));
-    console.log('Catedrático encontrado:', this.selectedCatedratico);
+    console.log('👤 Catedrático encontrado:', this.selectedCatedratico);
     
+    // Limpiar datos previos
     this.comentarios = [];
-    this.resultadoAnalisis = null;
-
-    // No cargaremos los comentarios automáticamente, esperaremos al botón
+    this.resultadosSentimientos = [];
+    this.error = '';
+    this.cdr.detectChanges(); // Actualizar vista
   }
 
+  // Cargar comentarios de un curso específico y analizar automáticamente
   cargarComentarios() {
-    console.log('Catedrático seleccionado:', this.selectedCatedratico);
-    
-    if (this.selectedCatedratico) {
-      // Intentar obtener el ID del curso desde diferentes ubicaciones
-      let cursoId = this.selectedCatedratico.cursoId;
-      
-      // Si no está directamente en el catedrático, buscar en cursos[0]
-      if (!cursoId && this.selectedCatedratico.cursos && this.selectedCatedratico.cursos.length > 0) {
-        cursoId = this.selectedCatedratico.cursos[0].cursoId;
-      }
-      
-      console.log('ID del curso encontrado:', cursoId);
-      
-      if (!cursoId) {
-        console.error('No se encontró el ID del curso para el catedrático');
-        return;
-      }
+    if (!this.selectedCatedratico) {
+      this.error = 'Por favor selecciona un catedrático primero';
+      return;
+    }
 
-      console.log('Realizando llamada a la API para el curso:', cursoId);
-      
-      this.evaluacionService.getComentariosPorCurso(cursoId).subscribe({
-        next: (response) => {
-          console.log('Respuesta de la API:', response);
-          if (response.success) {
-            this.comentarios = response.data;
-            console.log('Comentarios cargados:', this.comentarios);
-          } else {
-            console.error('Error al cargar comentarios:', response);
-          }
-        },
-        error: (error) => {
-          console.error('Error al cargar comentarios:', error);
+    // Obtener ID del curso
+    let cursoId = this.selectedCatedratico.cursoId;
+    if (!cursoId && this.selectedCatedratico.cursos && this.selectedCatedratico.cursos.length > 0) {
+      cursoId = this.selectedCatedratico.cursos[0].cursoId;
+    }
+    
+    if (!cursoId) {
+      this.error = 'No se pudo encontrar el curso para este catedrático';
+      return;
+    }
+
+    this.cargando = true;
+    this.error = '';
+    
+    console.log('🔍 Cargando comentarios del curso:', cursoId);
+    
+    this.evaluacionService.getComentariosPorCurso(cursoId).subscribe({
+      next: (response) => {
+        console.log('✅ Comentarios cargados:', response);
+        this.comentarios = response.data || [];
+        this.cargando = false;
+        
+        if (this.comentarios.length > 0) {
+          // Automáticamente analizar sentimientos de los comentarios
+          this.analizarSentimientosAutomatico();
+        } else {
+          this.error = 'No hay comentarios disponibles para este catedrático';
         }
-      });
-    } else {
-      console.error('No hay catedrático seleccionado');
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('❌ Error al cargar comentarios:', error);
+        this.error = 'Error al cargar comentarios del curso';
+        this.cargando = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  // Analizar sentimientos automáticamente
+  analizarSentimientosAutomatico() {
+    if (this.comentarios.length === 0) {
+      this.error = 'No hay comentarios para analizar';
+      return;
+    }
+
+    // Extraer solo los textos de comentarios
+    const textos = this.comentarios.map(comentario => comentario.comentarios);
+    this.analizarSentimientos(textos);
+  }
+
+  // Analizar sentimientos de textos específicos
+  analizarSentimientos(textos: string[]) {
+    if (!textos || textos.length === 0) {
+      this.error = 'No hay textos para analizar';
+      return;
+    }
+
+    this.cargando = true;
+    this.error = '';
+    
+    console.log('🧠 Enviando análisis de sentimientos:', { textos });
+
+    this.sentimentService.analizarSentimientos(textos).subscribe({
+      next: (response) => {
+        console.log('✅ Análisis completado:', response);
+        this.resultadosSentimientos = response.data.resultados;
+        this.cargando = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('❌ Error en análisis:', error);
+        
+        let mensajeError = 'Error desconocido';
+        if (error.error?.message) {
+          mensajeError = error.error.message;
+        } else if (error.message) {
+          mensajeError = error.message;
+        }
+        
+        // Mensajes específicos según el tipo de error
+        if (error.status === 500 && error.error?.message?.includes('Configuración del servicio')) {
+          mensajeError = 'El servicio de análisis de sentimientos no está configurado correctamente en el servidor. Contacta al administrador.';
+        } else if (error.status === 0) {
+          mensajeError = 'No se pudo conectar con el servidor. Verifica tu conexión a internet.';
+        }
+        
+        this.error = `Error en el análisis de sentimientos: ${mensajeError}`;
+        this.cargando = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  // Obtener clase CSS según el sentimiento
+  getSentimentClass(sentimiento: string): string {
+    switch (sentimiento) {
+      case 'positive': return 'text-success';
+      case 'negative': return 'text-danger';
+      case 'neutral': return 'text-warning';
+      default: return 'text-muted';
     }
   }
 
-  analizarSentimientos() {
-    if (this.comentarios.length > 0) {
-      console.log('Iniciando análisis de sentimientos...');
-      
-      // Extraer solo los textos de los comentarios
-      const textos = this.comentarios.map(c => c.comentarios);
-      console.log('Textos a analizar:', textos);
-
-      this.sentimentService.analyzeLocalSentiment(textos).subscribe({
-        next: (response) => {
-          console.log('Respuesta del análisis:', response);
-          if (response.success) {
-            this.resultadoAnalisis = {
-              documents: response.data.resultados.map((resultado: any) => ({
-                sentiment: resultado.sentimiento,
-                sentences: [{ text: resultado.texto }],
-                confidenceScores: {
-                  positive: parseFloat(resultado.confianza.positivo) / 100,
-                  neutral: parseFloat(resultado.confianza.neutral) / 100,
-                  negative: parseFloat(resultado.confianza.negativo) / 100
-                }
-              })),
-              modelVersion: 'Local Sentiment Analysis v1.0'
-            };
-          } else {
-            console.error('El análisis no fue exitoso:', response);
-          }
-        },
-        error: (error) => {
-          console.error('Error al analizar sentimientos:', error);
-        }
-      });
-    } else {
-      console.warn('No hay comentarios para analizar');
+  // Obtener emoji según el sentimiento
+  getSentimentEmoji(sentimiento: string): string {
+    switch (sentimiento) {
+      case 'positive': return '😊';
+      case 'negative': return '😞';
+      case 'neutral': return '😐';
+      default: return '❓';
     }
+  }
+
+  // Contar sentimientos por tipo
+  contarSentimientos(tipo: string): number {
+    return this.resultadosSentimientos.filter(r => r.sentimiento === tipo).length;
   }
 
   formatearFecha(fecha: string): string {
