@@ -778,25 +778,20 @@ export class SentimentAnalysisComponent implements OnInit {
       return;
     }
 
-    // Obtener ID del curso
-    let cursoId = this.selectedCatedratico.cursoId;
-    if (!cursoId && this.selectedCatedratico.cursos && this.selectedCatedratico.cursos.length > 0) {
-      cursoId = this.selectedCatedratico.cursos[0].cursoId;
-    }
-    
-    if (!cursoId) {
-      this.error = 'No se pudo encontrar el curso para este catedrático';
+    const catedraticoId = this.selectedCatedratico.catedraticoId;
+    if (!catedraticoId) {
+      this.error = 'No se pudo encontrar el catedrático seleccionado';
       return;
     }
 
     this.cargando = true;
     this.error = '';
-    
-    this.evaluacionService.getComentariosPorCurso(cursoId).subscribe({
+
+    this.evaluacionService.getComentariosPorCatedratico(catedraticoId).subscribe({
       next: (response) => {
         this.comentarios = response.data || [];
         this.cargando = false;
-        
+
         if (this.comentarios.length > 0) {
           // Automáticamente analizar sentimientos de los comentarios
           this.analizarSentimientosAutomatico();
@@ -807,7 +802,7 @@ export class SentimentAnalysisComponent implements OnInit {
       },
       error: (error) => {
         console.error('❌ Error al cargar comentarios:', error);
-        this.error = 'Error al cargar comentarios del curso';
+        this.error = 'Error al cargar comentarios del catedrático';
         this.cargando = false;
         this.cdr.detectChanges();
       }

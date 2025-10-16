@@ -280,10 +280,8 @@ export class EstadisticasComponent implements OnInit {
   }
 
   verComentarios(catedratico: any) {
-    const cursoId = this.obtenerCursoIdPorCatedratico(catedratico.nombreCompleto);
-    
-    if (cursoId > 0) {
-      this.evaluacionService.getComentariosPorCurso(cursoId).subscribe({
+    if (catedratico.catedraticoId > 0) {
+      this.evaluacionService.getComentariosPorCatedratico(catedratico.catedraticoId).subscribe({
         next: (response) => {
           if (response.success) {
             this.comentariosData = response;

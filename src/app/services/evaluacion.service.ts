@@ -108,29 +108,28 @@ export class EvaluacionService {
     return this.estadisticasCache$;
   }
 
-  getComentariosPorCurso(cursoId: number): Observable<any> {
+  getComentariosPorCatedratico(catedraticoId: number): Observable<any> {
     // Añadir timestamp para evitar cache del navegador sin usar headers personalizados
     const timestamp = Date.now();
-    const url = `${this.apiUrl}api/evaluaciones/cursos/${cursoId}/comentarios?_t=${timestamp}`;
-    console.log('🔄 Llamando a getComentariosPorCurso:', { url, cursoId, timestamp });
-    
+    const url = `${this.apiUrl}api/evaluaciones/catedraticos/${catedraticoId}/comentarios?_t=${timestamp}`;
+    console.log('🔄 Llamando a getComentariosPorCatedratico:', { url, catedraticoId, timestamp });
     return this.http.get(url).pipe(
       tap(response => {
-        console.log('✅ Respuesta de getComentariosPorCurso:', response);
+        console.log('✅ Respuesta de getComentariosPorCatedratico:', response);
         if (response && typeof response === 'object' && 'success' in response) {
           const responseData = response as any;
           console.log(`📝 Comentarios encontrados: ${responseData.data?.length || 0}`);
         }
       }),
       catchError((error) => {
-        console.error('❌ Error en getComentariosPorCurso:', {
-          cursoId,
+        console.error('❌ Error en getComentariosPorCatedratico:', {
+          catedraticoId,
           url,
           status: error.status,
           statusText: error.statusText,
           error: error.error
         });
-        return this.handleError('getComentariosPorCurso')(error);
+        return this.handleError('getComentariosPorCatedratico')(error);
       })
     );
   }
