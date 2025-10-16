@@ -33,14 +33,14 @@ export interface SentimentResponse {
   providedIn: 'root'
 })
 export class SentimentAnalysisService {
-  private apiUrl = 'https://evaluacion-api.vercel.app/api/evaluaciones';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
   analizarSentimientos(textos: string[]): Observable<SentimentResponse> {
     const body = { textos };
-    console.log('🧠 Enviando análisis de sentimientos:', { url: `${this.apiUrl}/sentimientos`, textos });
-    return this.http.post<SentimentResponse>(`${this.apiUrl}/sentimientos`, body);
+    console.log('🧠 Enviando análisis de sentimientos:', { url: `${this.apiUrl}api/evaluaciones/sentimientos`, textos });
+    return this.http.post<SentimentResponse>(`${this.apiUrl}api/evaluaciones/sentimientos`, body);
   }
 
   obtenerComentariosPorCurso(cursoId: number): Observable<any> {
