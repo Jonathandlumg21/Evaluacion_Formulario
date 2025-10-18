@@ -90,12 +90,18 @@ export class EvaluacionService {
   }
 
   getEstadisticas(): Observable<any> {
-    if (!this.estadisticasCache$) {
-      const url = `${this.apiUrl}api/evaluaciones/estadisticas`;
-      console.log('🔄 Llamando a getEstadisticas (primera vez):', url);
+    // En producción, siempre obtener datos frescos para las estadísticas
+    const isProduction = environment.production;
+    
+    if (!this.estadisticasCache$ || isProduction) {
+      // Agregar timestamp para evitar caché del navegador en producción
+      const timestamp = isProduction ? `?_t=${Date.now()}` : '';
+      const url = `${this.apiUrl}api/evaluaciones/estadisticas${timestamp}`;
+      console.log('🔄 Llamando a getEstadisticas:', { url, isProduction, useCache: !isProduction });
+      
       this.estadisticasCache$ = this.http.get(url).pipe(
         tap(response => console.log('✅ Respuesta de getEstadisticas:', response)),
-        shareReplay(1), // Cache la respuesta para reutilizar
+        shareReplay(isProduction ? 0 : 1), // No cache en producción, cache en desarrollo
         catchError((error) => {
           console.error('❌ Error en getEstadisticas:', error);
           this.estadisticasCache$ = undefined; // Limpia cache en error
@@ -103,7 +109,7 @@ export class EvaluacionService {
         })
       );
     } else {
-      console.log('📊 Usando estadísticas desde cache');
+      console.log('📊 Usando estadísticas desde cache (desarrollo)');
     }
     return this.estadisticasCache$;
   }
